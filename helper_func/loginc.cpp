@@ -38,9 +38,12 @@ int main(int argc, char *argv[]) {
   char data[255];
   char user[100]; //b07902000
   char pass[100]; //password
+  int semester;
+  char seme_op[100];
   
   strcpy(user, argv[1]);
   strcpy(pass, argv[2]);
+  semester = atoi(argv[3]);
   sprintf(data, "user=%s&pass=%s&Submit=µn¤J", user, pass);
   
   
@@ -59,10 +62,12 @@ int main(int argc, char *argv[]) {
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_nothing);
   curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "");
   //----------------------------------------------------------------------------------------------------
+  char *url;
   //1.sign in(1)
   curl_easy_setopt(curl, CURLOPT_URL, "https://ceiba.ntu.edu.tw/ChkSessLib.php");//Url
 //  curl_easy_setopt(curl, CURLOPT_REFERER, "https://ceiba.ntu.edu.tw/index.php");
   curl_easy_perform(curl);
+  
   /*test
   url = NULL;
   curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &url);
@@ -72,8 +77,17 @@ int main(int argc, char *argv[]) {
   //----------------------------------------------------------------------------------------------------
   //2.sign in(2)
   curl_easy_setopt(curl, CURLOPT_URL, "https://web2.cc.ntu.edu.tw/p/s/login2/p1.php");//Url
-  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);//Post message
+  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data); //Post message
   curl_easy_perform(curl);
+  
+  url = NULL;
+  curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &url);
+  if(strcmp(url, "https://web2.cc.ntu.edu.tw/p/s/login2/p1.php") == 0) {
+    //printf("can't login...\n");
+    curl_easy_cleanup(curl);
+    return 1;
+  }
+  
   /*test
   url = NULL;
   curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &url);
@@ -84,13 +98,31 @@ int main(int argc, char *argv[]) {
   //3.sign in(3)
   curl_easy_setopt(curl, CURLOPT_URL, "https://ceiba.ntu.edu.tw/ChkSessLib.php");//Url
   curl_easy_perform(curl);
+  
+  /*test
+  url = NULL;
+  curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &url);
+  if(url)
+    printf("C Redirect to: %s\n", url);
+  */
   //----------------------------------------------------------------------------------------------------
+  //4.choose semester
+  sprintf(seme_op, "https://ceiba.ntu.edu.tw/student/index.php?seme_op=%d-%d", semester / 10, semester % 10);
+  curl_easy_setopt(curl, CURLOPT_URL, seme_op);//Url
+  curl_easy_perform(curl);
+  
+  /*test
+  url = NULL;
+  curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &url);
+  if(url)
+    printf("D Redirect to: %s\n", url);
+  */
   
   
   
   
   
-  printf("check cookie.txt!!\n");
+  //printf("check cookie.txt!!\n");
   curl_easy_cleanup(curl);
   return 0;
 }

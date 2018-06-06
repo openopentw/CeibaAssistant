@@ -6,6 +6,7 @@
 #include "curl.h"
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 //#include <windows.h>
 using namespace std;
 
@@ -31,6 +32,7 @@ size_t write(void *contents, size_t size, size_t nmemb, void *userp) {
 
 
 int main(int argc, char *argv[]) {
+  chdir("./helper_func");
   static const char *pCACertFile = "cacert.pem";
   CURL *curl;
   char data[255];
@@ -51,8 +53,7 @@ int main(int argc, char *argv[]) {
   CURLcode res;
   //0.
   curl_easy_setopt(curl, CURLOPT_CAINFO, pCACertFile);
-//  curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); //print html header request/responses in console
-  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1); //Follow redirects
+  curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); //print html header request/responses in console
   curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1); //Follow redirects
   curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "cookie.txt"); //Save cookies here
   curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "cookie.txt"); //Load cookies here

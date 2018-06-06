@@ -38,11 +38,9 @@ int main(int argc, char *argv[]) {
   char data[255];
   char user[100]; //b07902000
   char pass[100]; //password
-  int semester;
   
   strcpy(user, argv[1]);
   strcpy(pass, argv[2]);
-  semester = atoi(argv[3]);
   sprintf(data, "user=%s&pass=%s&Submit=µn¤J", user, pass);
   
   
@@ -53,7 +51,7 @@ int main(int argc, char *argv[]) {
   CURLcode res;
   //0.
   curl_easy_setopt(curl, CURLOPT_CAINFO, pCACertFile);
-  curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); //print html header request/responses in console
+  //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); //print html header request/responses in console
   curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1); //Follow redirects
   curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "cookie.txt"); //Save cookies here
   curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "cookie.txt"); //Load cookies here

@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
   
   url = NULL;
   curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &url);
-  if(strcmp(url, "https://web2.cc.ntu.edu.tw/p/s/login2/p1.php") == 0) {
+  if(strstr(url, "https://ceiba.ntu.edu.tw/ChkSessLib.php?sess=") == NULL) {
     //printf("can't login...\n");
     curl_easy_cleanup(curl);
     return 1;

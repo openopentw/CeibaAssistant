@@ -25,6 +25,14 @@ lecture =  [
         }
     }
 ]
+def print_(dic):
+    for a,b in dic.items():
+        if (type(b) is dict): 
+            print ''.join(a).encode('utf8') + ' '
+            print_(b)
+        else:
+            print ''.join(a).encode('utf8') + ' ' + ''.join(b).encode('utf8')
+            
 
 #extract table without link
 '''
@@ -62,40 +70,61 @@ def extract_table_vertical(soup): #return list
             for title in titles:
                 title = re.sub("\r|\n| ","",title.text)
                 index.append(title)
-            continue 
+            continue
         item = {}
         contents = []
         cols = row.find_all('td')
         for content in cols:
-            content = re.sub("\r|\n| ","",content.text)
-            contents.append(content)
+            links = content.find_all('a')
+            if(len(links) > 0):
+                link_dict ={}
+                for link in links:
+                    link_dict[re.sub("\r|\n| ","",link.text)] = link['href']
+                contents.append(link_dict)
+            else:        
+                text = re.sub("\r|\n| ","",content.text)
+                contents.append(text)
         for i in range(len(index)):
             item[index[i]] = contents[i]
 
         data.append(item)
-
+    '''
     for i in range(len(data)):
-        for k,v in data[i].items():
-            print ''.join(k).encode('utf8') + ' ' + ''.join(v).encode('utf8')
-'''
+        print_(data[i])
+    
     for i in range(len(data)):
         print ''.join(data[i][u'名稱']).encode('utf8')
-'''
+    '''
+    return data
 
-file = open('info.html','r')
+file = open('sylab.html','r')
 #find h1 for html type
 html = file.read()
 soup = BeautifulSoup(html,'html.parser')
 html_type = ''.join(soup.find('h1')).encode('utf8')
-'''
+
 print html_type
 data = extract_table_vertical(soup)
 
+file2 = open('sylabo.html','r')
+html2 = file2.read()
+soup2 =BeautifulSoup(html2,'html.parser')
+data2 =extract_table_vertical(soup2)
+dif = []
+for i in range(len(data2)):
+    for x in data2[i]:
+        if (data[i][x] != data2[i][x]):
+                dif.append(data2[i])
+for a in range(len(dif)):
+    print_(dif[a])
 '''
+print '####################'
+a,b = data[3][u'內容檔案'].items()[0]
+print ''.join(a).encode('utf8') + ' ' + ''.join(b).encode('utf8')
+
 data = extract_table_horizon(soup)
 
 ##################
-'''
 #def diff(new,old):
 for i in range(0,len(new)):
     new_class = new[i]

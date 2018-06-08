@@ -3,6 +3,10 @@
 from bs4 import BeautifulSoup
 import re
 import json
+
+old_file = 'hw1o.html'
+new_file = 'hw1.html'
+
 lecture =  [
     {
         'ChineseName' : 'aaa',
@@ -97,7 +101,7 @@ def extract_table_vertical(soup): #return list
     '''
     return data
 
-file = open('sylab.html','r')
+file = open(old_file,'r')
 #find h1 for html type
 html = file.read()
 soup = BeautifulSoup(html,'html.parser')
@@ -106,15 +110,16 @@ html_type = ''.join(soup.find('h1')).encode('utf8')
 print html_type
 data = extract_table_vertical(soup)
 
-file2 = open('sylabo.html','r')
+file2 = open(new_file,'r')
 html2 = file2.read()
 soup2 =BeautifulSoup(html2,'html.parser')
 data2 =extract_table_vertical(soup2)
+
 dif = []
 for i in range(len(data2)):
-    for x in data2[i]:
-        if (data[i][x] != data2[i][x]):
-                dif.append(data2[i])
+    if(data2[i] not in data):
+        dif.append(data2[i])
+
 for a in range(len(dif)):
     print_(dif[a])
 '''

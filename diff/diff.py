@@ -31,7 +31,7 @@ lecture =  [
 課程資訊&教師資訊 表格結構一樣
 剩下也一樣
 '''
-def extract_table_horizon(soup):
+def extract_table_horizon(soup): #return dictionary
     
     data = {}
     table = soup.find('table')
@@ -41,26 +41,59 @@ def extract_table_horizon(soup):
         index = row.find('th')
         index = re.sub("\r|\n","",index.text) 
         content = row.find('td')
-        content = re.sub("\r|\n","",content.text)
+        content = re.sub("\r|\n| ","",content.text)
         
         data[index] = content;
-
-    print ''.join(data[u'課號']).encode('utf8')
+    for k,v in data.items():
+        print ''.join(k).encode('utf8') + ' ' + ''.join(v).encode('utf8')
     
     return data
 ##################
+def extract_table_vertical(soup): #return list
+    data = []
+    table = soup.find('table')
+
+    rows = table.find_all('tr')
+    index = []
+    for row in rows:
+        titles = row.find_all('th')
+        if (len(titles) > 0) :
+            
+            for title in titles:
+                title = re.sub("\r|\n| ","",title.text)
+                index.append(title)
+            continue 
+        item = {}
+        contents = []
+        cols = row.find_all('td')
+        for content in cols:
+            content = re.sub("\r|\n| ","",content.text)
+            contents.append(content)
+        for i in range(len(index)):
+            item[index[i]] = contents[i]
+
+        data.append(item)
+
+    for i in range(len(data)):
+        for k,v in data[i].items():
+            print ''.join(k).encode('utf8') + ' ' + ''.join(v).encode('utf8')
+'''
+    for i in range(len(data)):
+        print ''.join(data[i][u'名稱']).encode('utf8')
+'''
 
 file = open('info.html','r')
 #find h1 for html type
 html = file.read()
 soup = BeautifulSoup(html,'html.parser')
 html_type = ''.join(soup.find('h1')).encode('utf8')
-if html_type == '課程資訊':
-    print u'是 課程資訊啦...'
-    data = extract_table_horizon(soup)
-else:
-    print html_type
-    print '88888'
+'''
+print html_type
+data = extract_table_vertical(soup)
+
+'''
+data = extract_table_horizon(soup)
+
 ##################
 '''
 #def diff(new,old):

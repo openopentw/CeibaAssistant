@@ -3,61 +3,7 @@
 from bs4 import BeautifulSoup
 import re
 
-old_file = 'hw2.html'
-new_file = 'hw1.html'
 
-lecture =  [
-    {
-        'ChineseName' : 'aaa',
-        'EnglishName' : 'bbb',
-        'Tutor' : 'ccc',
-        'Content': {
-            '課程資訊': open('info.html','r').read(),
-            '教師資訊': open('tutor.html','r').read(),
-            '公佈欄': {
-                'html':open('board.html','r').read(),
-                'content':{
-                    '期中考說明書':open('board_i.html','r').read()
-                }
-            },
-            '課程內容': open('sylab.html','r').read(),
-            '作業區': {
-                'html': open('hw1.html','r').read(),
-                'content': {
-                    '作業一': open('hw2.html','r').read(),
-                    '作業1': open('hw2-2.html','r').read()
-                }
-                    
-            },
-            '投票區': open('ballot.html','r').read(),
-            # TODO: 討論看版: html_sring
-            '學習成績': open('grade.html','r').read()
-        }
-    }
-]
-lecture2 =  [
-    {
-        'ChineseName' : 'aaa',
-        'EnglishName' : 'bbb',
-        'Tutor' : 'ccc',
-        'Content': {
-            '課程資訊': '',
-            '教師資訊': '',
-            '公佈欄': {
-                'html':{},
-                'content':{}
-            },
-            '課程內容': '',
-            '作業區': {
-                   'html':{},
-                'content':{} 
-            },
-            '投票區': '',
-            # TODO: 討論看版: html_sring
-            '學習成績': ''
-        }
-    }
-]
 def print_(dic):
     if (type(dic) is dict): 
         for a,b in dic.items():
@@ -232,22 +178,22 @@ def diff_class( new_class, old_class):
             new_data = diff_item(html_new,html_old)
             data = extract_table_vertical(BeautifulSoup(html_new,'html5lib'))
             for a in data:
-                if ('期中考' in a.values()):
-                    cal['考試']['期中考'] = a['日期']
-                elif ('期末考' in a.values()):
-                    cal['考試']['期末考'] = a['日期']
+                for b in a.values():
+                    if ('期中考' in b):  
+                        cal['考試']['期中考'] = a['日期']
+                    elif ('期末考' in b):
+                        cal['考試']['期末考'] = a['日期']
             for i in new_data:
                 title = i['週次']
                 down[key][title] = i['內容檔案']
 
     return noti,cal,down
-
-
-
-
-
-
-
+def get_head(new_class):
+    head = {}
+    titles = ['ChineseName','EnglishName','Tutor']
+    for i in titles:
+        head[i] = new_class[i]
+    return head
 def diff( new_lectures, old_lectures):
     notifications = []
     calendars = []
@@ -256,48 +202,76 @@ def diff( new_lectures, old_lectures):
         new_class = new_lectures[i]
         old_class = old_lectures[i]
         #print_(new_class)
-        
+        head = get_head(new_class)
         noti, cal, down = diff_class(new_class,old_class)
-        print_(down)
-        '''
-        notifications.append(noti)
-        calendars.append(cal)
-        downlaods.append(down)
-        '''
+        #print_(noti)
+        
+        head['Content'] = noti
+        notifications.append(head)
+        head['Content'] = cal
+        calendars.append(head)
+        head['Content'] = down
+        downlaods.append(head)
+        
     return notifications,calendars,downlaods
+def main():
+    notifications,calendars ,downlaods = diff(lecture,lecture2)
 
-diff(lecture,lecture2)
-'''
-file = open(old_file,'r')
-#find h1 for html type
-html = file.read()
-soup = BeautifulSoup(html,'html5lib')
-html_type = ''.join(soup.find('h1')).encode('utf8')
+if __name__ == '__main__':
 
-print html_type
-data = extract_table_horizon(soup)
-#print_(data)
+    old_file = 'hw2.html'
+    new_file = 'hw1.html'
 
-file2 = open(new_file,'r')
-html2 = file2.read()
-soup2 =BeautifulSoup(html2,'html5lib')
-data2 =extract_table_vertical(soup2)
-print_(data2)
-
-dif = []
-for i in range(len(data2)):
-    if(data2[i] not in data):
-        dif.append(data2[i])
-
-for a in range(len(dif)):
-    print_(dif[a])
-
-print '####################'
-a,b = data[3]['內容檔案'].items()[0]
-print ''.join(a).encode('utf8') + ' ' + ''.join(b).encode('utf8')
-
-data = extract_table_horizon(soup)
-
-##################
-'''
-
+    lecture =  [
+        {
+        'ChineseName' : 'aaa',
+        'EnglishName' : 'bbb',
+        'Tutor' : 'ccc',
+        'Content': {
+            '課程資訊': open('info.html','r').read(),
+            '教師資訊': open('tutor.html','r').read(),
+            '公佈欄': {
+                'html':open('board.html','r').read(),
+                'content':{
+                    '期中考說明書':open('board_i.html','r').read()
+                }
+            },
+            '課程內容': open('sylab.html','r').read(),
+            '作業區': {
+                'html': open('hw1.html','r').read(),
+                'content': {
+                    '作業一': open('hw2.html','r').read(),
+                    '作業1': open('hw2-2.html','r').read()
+                }
+                    
+            },
+            '投票區': open('ballot.html','r').read(),
+            # TODO: 討論看版: html_sring
+            '學習成績': open('grade.html','r').read()
+        }
+        }
+    ]
+    lecture2 =  [
+        {
+        'ChineseName' : 'aaa',
+        'EnglishName' : 'bbb',
+        'Tutor' : 'ccc',
+        'Content': {
+            '課程資訊': '',
+            '教師資訊': '',
+            '公佈欄': {
+                'html':{},
+                'content':{}
+            },
+            '課程內容': '',
+            '作業區': {
+                   'html':{},
+                'content':{} 
+            },
+            '投票區': '',
+            # TODO: 討論看版: html_sring
+            '學習成績': ''
+            }
+        }
+    ]
+    main()

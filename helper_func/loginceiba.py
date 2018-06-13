@@ -8,4 +8,5 @@ def info(user, password, semester):
         f = open('./helper_func/cookie.txt', 'r')
         content = f.read()
         content = content.strip()
+        f.close()
         return content

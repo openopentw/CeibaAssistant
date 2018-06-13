@@ -7,6 +7,7 @@ dictionary.
 """
 
 import json
+import ssl
 import os.path as path
 
 from urllib.request import Request, urlopen
@@ -115,6 +116,7 @@ class Crawler():
 
     def get_html_with_cookie(self, url, debug=False):
         req = Request(url, headers=self.headers)
+        ssl._create_default_https_context = ssl._create_unverified_context
         res = urlopen(req)
         html = res.read()
         if debug:

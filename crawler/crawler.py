@@ -72,12 +72,12 @@ class Crawler():
                     bulletin = self.get_bulletin_htmls(content['公佈欄'])
                     content['公佈欄'] = {
                         'html': content['公佈欄'],
-                        'content': bulletin,
+                        'Content': bulletin,
                     }
                 else:
                     content['公佈欄'] = {
                         'html': content['公佈欄'],
-                        'content': {},
+                        'Content': {},
                     }
 
                 # 作業區
@@ -85,15 +85,15 @@ class Crawler():
                     bulletin = self.get_hw_htmls(content['作業區'])
                     content['作業區'] = {
                         'html': content['作業區'],
-                        'content': bulletin,
+                        'Content': bulletin,
                     }
                 else:
                     content['作業區'] = {
                         'html': content['作業區'],
-                        'content': {},
+                        'Content': {},
                     }
 
-            course['content'] = content
+            course['Content'] = content
         if debug:
             with open('./courses.json', 'w') as outfile:
                 json.dump(courses, outfile)
@@ -173,7 +173,7 @@ class Crawler():
             if debug:
                 print(url)
             html = self.get_html_with_cookie(url)
-            if len(html) < 32:
+            if len(html) < 32: # this page is not on Ceiba
                 content[idx] = ''
             else:
                 content[idx] = html.decode()

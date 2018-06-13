@@ -7,6 +7,7 @@ dictionary.
 """
 
 import json
+import os.path as path
 
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
@@ -24,7 +25,7 @@ class Crawler():
             'Cookie': cookie
         }
 
-    def crawl(self, debug=False):
+    def crawl(self):
         """Download all html files from Ceiba with given cookie.
 
         Args:
@@ -32,7 +33,8 @@ class Crawler():
                 file or not.
 
         Returns:
-            A list of dicts. In each dict, the keys are the attributes of that course.
+            Two list of dicts. One is the new dict, and another one is the old
+            dict. In each dict, the keys are the attributes of that course.
             The keys are as follows:
 
                 - ChineseName: string
@@ -94,10 +96,22 @@ class Crawler():
                     }
 
             course['Content'] = content
-        if debug:
-            with open('./courses.json', 'w') as outfile:
-                json.dump(courses, outfile)
-        return courses
+
+        fname = './courses.json'
+        old_courses = self.load_old_courses(fname)
+
+        with open('./courses.json', 'w') as outfile:
+            json.dump(courses, outfile)
+
+        return courses, old_courses
+
+    def load_old_courses(self, fname):
+        if path.isfile(fname):
+            with open(fname) as infile:
+                old_courses = json.load(infile)
+        else:
+            old_courses = {}
+        return old_courses
 
     def get_html_with_cookie(self, url, debug=False):
         req = Request(url, headers=self.headers)
@@ -223,7 +237,7 @@ class Crawler():
 def main():
     cookie = 'Add your cookie here !'
     crawler = Crawler(cookie)
-    courses = crawler.crawl(debug=True)
+    courses = crawler.crawl()
 
 if __name__ == '__main__':
     main()

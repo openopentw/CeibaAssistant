@@ -5,5 +5,7 @@ def info(user, password, semester):
     if not ret == 0:
         return 1;
     else:
-        f = open('./helper_func/cookie.txt', 'r');
-        return f.read();
+        f = open('./helper_func/cookie.txt', 'r')
+        content = f.read()
+        content = content.strip()
+        return content

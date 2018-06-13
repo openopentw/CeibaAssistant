@@ -2,10 +2,11 @@ import os
 import sys
 from helper_func import loginceiba
 
-login_result = loginceiba.info('b07902000', '*****', '1062')
-if login_result == 0:
-    print('login_success, check cookie.txt!!')
-else:
+cookie = loginceiba.info('b07902000', '*****', '1062')
+if cookie == 1:
     print("can't login!!")
+else:
+    print('login_success, cookie:')
+    print(cookie)
 
 

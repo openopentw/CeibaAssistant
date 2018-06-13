@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+#include <assert.h>
 
 #include "curl.h"
 #include <sys/stat.h>
@@ -117,12 +118,42 @@ int main(int argc, char *argv[]) {
   if(url)
     printf("D Redirect to: %s\n", url);
   */
+  //----------------------------------------------------------------------------------------------------
+  curl_easy_cleanup(curl);
+  
+  FILE *fp = fopen("cookie.txt", "rb");
+  fseek(fp, 0, SEEK_END);
+  int file_length = ftell(fp) + 1;
+  char buffer[file_length];
+  buffer[file_length - 1] = '\0';
+  rewind(fp);
+  fread(buffer, 1, file_length, fp);
+  fclose(fp);
+  
+  char *pch;
+  pch = strstr(buffer, "PHPSESSID");
+  pch += 10;
+  char PHPSESSID[1000];
+  strncpy(PHPSESSID, pch, 32);
+  PHPSESSID[32] = '\0';
+  
+  char user2[1000];
+  pch = strstr(buffer, "user");
+  pch += 5;
+  strcpy(user2, pch);
+  
+  char cookie_new[1000];
+  sprintf(cookie_new, "PHPSESSID=%s; user=%s", PHPSESSID, user2);
+  cookie_new[104] = '\0';
+  fp = fopen("cookie.txt", "w");
+  fwrite(cookie_new, 1, strlen(cookie_new), fp);
+  fclose(fp);
   
   
   
   
   
   //printf("check cookie.txt!!\n");
-  curl_easy_cleanup(curl);
+  //curl_easy_cleanup(curl);
   return 0;
 }

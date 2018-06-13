@@ -1,0 +1,73 @@
+
+
+<!doctype html>
+<html>
+<head>
+    <title>NTU CEIBA - 國立臺灣大學 非同步課程管理系統</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+            
+    <link rel="stylesheet" href="../../template/1/1/course.css" type="text/css">
+    
+
+    <script language="javascript">
+        function hw_view(current_lang,hw_sn){ 
+            location.href=("./hw_view.php?current_lang="+current_lang+"&hw_sn="+hw_sn); 
+        }
+    </script>
+
+</head>
+
+<body>
+<div id="container">
+    <div id="main">
+        <div id="wel-msg"><span class="user">周泓佑</span> 同學，歡迎進入 Ceiba 系統</div>
+        <div id="section">  
+            <h1>作業區</h1>
+            <ul id="nav_sect">
+                <li>作業列表</li>
+            </ul>
+            <div id="sect_cont">
+                        <table>
+            <caption>已指派的作業</caption>
+                <tr> 
+                    <th>名稱</th>
+                    <th>成員</th>
+                    <th>繳交方法</th>
+                    <th>成績比重</th>
+                    <th>繳交期限</th>
+                    <th>逾期繳交</th>
+                    <th>繳交日期</th>
+                    <th>作業評語</th>
+                    <th>作業觀摩</th>
+                </tr>
+                                <tr> 
+                    <td><a href="hw_show.php?current_lang=chinese&hw_sn=158571"><font color="red">作業一</a></font></td>
+                    <td><font color="red">個人</font></td>
+                    <td><font color="red">線上繳交</font></td>
+                    <td><font color="red">--</font></td>
+                    <td><font color="red">2016-09-26 14</font></td>
+                    <td><font color="red">可以</font></td>
+                    <td><font color="red">2016-09-22 00:52:29</font></td>
+                    <td><font color="red"><a href="hw_eval.php?hw_sn=158571&uname=b03902011&current_lang=chinese">觀看評語</a></font></td>
+                    <td><input type="button"  value="進入" onClick="hw_view('chinese','158571')" class="btn" /></td>
+                </tr>
+                          <tr> 
+                    <td><a href="hw_show.php?current_lang=chinese&hw_sn=158571"><font color="red">作業1</a></font></td>
+                    <td><font color="red">個人</font></td>
+                    <td><font color="red">線上繳交</font></td>
+                    <td><font color="red">--</font></td>
+                    <td><font color="red">2016-09-26 14</font></td>
+                    <td><font color="red">可以</font></td>
+                    <td><font color="red">2016-09-22 00:52:29</font></td>
+                    <td><font color="red"><a href="hw_eval.php?hw_sn=158571&uname=b03902011&current_lang=chinese">觀看評語</a></font></td>
+                    <td><input type="button"  value="進入" onClick="hw_view('chinese','158571')" class="btn" /></td>
+                </tr>
+                                  
+                 
+            </table>
+                        </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+
+
+
+<!doctype html>
+<html>
+<head>
+    <title>NTU CEIBA - 國立臺灣大學 非同步課程管理系統</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+            
+    <link rel="stylesheet" href="../../template/1/1/course.css" type="text/css">
+    
+    <script language="JavaScript" type="text/JavaScript">
+    <!--
+    function Page_load(op,flag) {
+        if(op=="hw_upload" && !flag)
+            alert('作業上傳失敗！');
+    }
+    //-->
+    </script>
+</head>
+
+<body onLoad="Page_load('','')">
+<div id="container">
+    <div id="main">
+        <div id="wel-msg"><span class="user">周泓佑</span> 同學，歡迎進入 Ceiba 系統</div>
+        <div id="section">  
+            <h1>作業區</h1>
+            <ul id="nav_sect">
+                <li><a href="hw.php?current_lang=chinese">作業列表</a></li>
+            </ul>
+            <div id="sect_cont">
+            <table>
+            <caption>線上繳交</caption>
+            <colgroup>
+                <col id="vthead" class="vhead" />
+                <col id="vtbody" />
+            </colgroup>
+                <tr> 
+                    <th>名稱</th>
+                    <td>作業1</td>
+                </tr>
+                <tr> 
+                    <th>作業說明</th>
+                    <td>請大家寫unit999999的作業，手寫後並上傳掃描、照相、壓縮檔。&nbsp;</td>
+                </tr>
+                <tr> 
+                    <th>相關檔案</th>
+                    <td>
+                                &nbsp;
+            </td>
+                </tr>
+                <tr> 
+                    <th>相關網址</th>
+                    <td>
+                                        &nbsp;
+                                        </td>
+                </tr>
+                <tr> 
+                    <th>成員</th>
+                    <td>個人</td>
+                </tr>
+                <tr> 
+                    <th>繳交方法</th>
+                    <td>線上繳交</td>
+                </tr>
+                <tr> 
+                    <th>成績比重</th>
+                    <td>--</td>
+                </tr>
+                <tr> 
+                    <th>繳交期限</th>
+                    <td>2016-09-26 14</td>
+                </tr>
+                <tr> 
+                    <th>逾期繳交</th>
+                    <td>可以</td>
+                </tr>
+                                <tr> 
+                    <th>繳交日期</th>
+                    <td>2016-09-22 00:52:29&nbsp;</td>
+                </tr>
+                <tr> 
+                    <th>已上傳檔案</th>
+                    <td>     
+                &nbsp;</td>
+                </tr>
+                                <tr> 
+                    <th>檔案上傳</th>
+                    <td>
+                    <form name="form1" action="hw_show.php?current_lang=chinese" method="post" enctype="multipart/form-data">
+                    <input name="op" type="hidden" value="hw_upload">                    
+                    <input name="hw_sn" type="hidden" value="158571">
+                    <input name="old_flie" type="hidden" value="/hw158571/hw158571_b03902011_bbedf6de750313c_1.pdf">
+                    <input type="hidden" name="MAX_FILE_SIZE" value="20000000">
+                    <input type="file" name="file" class="inp" />                    
+                    <input type="submit" name="Submit2" value="確定並送出" class="btn" />
+                    </form>
+                    <p class="note">檔案上傳說明</p>
+                    <ol class="note1">
+                        <li>請確定大小不超過15MB，並且無毒方可上傳！</li><li>上傳後，請務必再次點按「已上傳檔案」連結，確定可以下載或開啟，檢查作業上傳成功。</li><li>已上傳之檔案將自動更改檔名，請檢視繳交日期所顯示的時間，以確認為最近上傳之檔案。</li>
+                    </ol>
+                    </td>
+                </tr>
+                                            </table>
+            </div>
+            <p>                     
+                                <input type="button" name="Submit" onclick="location.href='hw.php?current_lang=chinese';" value="回前頁" class="btn" /></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

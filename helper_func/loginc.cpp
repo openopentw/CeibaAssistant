@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
-#include <assert.h>
 
 #include "curl.h"
 #include <sys/stat.h>
@@ -125,9 +124,9 @@ int main(int argc, char *argv[]) {
   fseek(fp, 0, SEEK_END);
   int file_length = ftell(fp) + 1;
   char buffer[file_length];
-  buffer[file_length - 1] = '\0';
   rewind(fp);
-  fread(buffer, 1, file_length, fp);
+  fread(buffer, 1, file_length - 1, fp);
+  buffer[file_length - 1] = '\0';
   fclose(fp);
   
   char *pch;

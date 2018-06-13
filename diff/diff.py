@@ -81,13 +81,14 @@ def diff_item(new, old):
     if(old):
         soup2 = BeautifulSoup(old,'html5lib')
         data2 = extract_table_vertical(soup2)
+        dif = []
+        for i in data2:
+            if i not in data:
+                dif.append(i)
+        return dif
     else:
         return data1
-    dif = []
-    for i in data2:
-        if i not in data:
-            dif.append(i)
-    return dif
+    
 
 def diff_class( new_class, old_class):
     noti = {}
@@ -102,14 +103,19 @@ def diff_class( new_class, old_class):
         down[key] = {}
         noti[key] = {}
         if (key == '課程資訊'):
+            if not new_content[key]:
+                continue
             info = extract_table_horizon(BeautifulSoup(new_content[key],'html5lib'))
             for i in timeNplace:
                 noti[i] = info[i]
                 cal[i] = info[i]
 
         elif (key == '公佈欄') or ( key == '作業區'):
+
             
             html_new = new_content[key]['html']
+            if not html_new:
+                continue
             html_old = old_content[key]['html']
             differ = diff_item(html_new,html_old)
 
@@ -128,7 +134,10 @@ def diff_class( new_class, old_class):
                     down[key][title] = post['相關檔案']
 
         elif (key == '投票區') or (key == '學習成績'):
+            
             html_new = new_content[key]
+            if not html_new:
+                continue
             html_old = old_content[key]
             new_data = diff_item(html_new,html_old)
             for i in new_data:
@@ -139,6 +148,8 @@ def diff_class( new_class, old_class):
                     title = i['項目']
                     noti[key][title] = i['得分']
         elif key == '課程內容':
+            if not new_content[key]:
+                continue
             cal['考試'] = {}
             html_new = new_content[key]
             html_old = old_content[key]
@@ -194,6 +205,7 @@ if __name__ == '__main__':
         'ChineseName' : 'aaa',
         'EnglishName' : 'bbb',
         'Tutor' : 'ccc',
+        'url': 'https://ceiba.ntu.edu.tw/1062PE2074_B9',
         'Content': {
             '課程資訊': open('info.html','r').read(),
             '教師資訊': open('tutor.html','r').read(),
@@ -205,14 +217,12 @@ if __name__ == '__main__':
             },
             '課程內容': open('sylab.html','r').read(),
             '作業區': {
-                'html': open('hw1.html','r').read(),
+                'html':'',
                 'content': {
-                    '作業一': open('hw2.html','r').read(),
-                    'Project 1': open('hw2-2.html','r').read()
                 }
                     
             },
-            '投票區': open('ballot.html','r').read(),
+            '投票區': '',
             # TODO: 討論看版: html_sring
             '學習成績': open('grade.html','r').read()
         }

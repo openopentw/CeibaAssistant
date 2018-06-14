@@ -8,7 +8,7 @@ LIBS   := $(DEPS)/loginc
 
 all: build
 
-build: $(LIBS)
+build:
 	make -C $(DEPS)
 
 start: build

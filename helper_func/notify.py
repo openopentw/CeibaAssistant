@@ -3,17 +3,17 @@
 
 class Notifier():
     def __init__(self, gui='gtk'):
-        if gui in ['gtk', 'Gtk']:
-            self.notifier = GtkNotifier()
-        else:
-            self.notifier = QtNotifier()
+        gui_notifier = {
+            'gtk': GtkNotifier,
+            'qt': QtNotifier,
+        }
+        self.notifier = gui_notifier[gui]()
 
-    def _show_notification(self, *content):
-        icon = content[2] if len(content) > 2 else 'document-open'
-        self.notifier._show_notification(*content[:2], icon)
+    def _show_notification(self, summary, body, icon='document-open'):
+        self.notifier._show_notification(summary, body, icon)
 
 
-class GtkNotifier(Notifier):
+class GtkNotifier:
     def __init__(self):
         from gi.repository import Notify
         Notify.init('Ceiba Assistant')
@@ -24,7 +24,7 @@ class GtkNotifier(Notifier):
         message.show()
 
 
-class QtNotifier(Notifier):
+class QtNotifier:
     def __init__(self):
         import sys
         from PyQt5 import Qt

@@ -83,7 +83,7 @@ def diff_item(new, old):
         data2 = extract_table_vertical(soup2)
         dif = []
         for i in data2:
-            if i not in data:
+            if i not in data1:
                 dif.append(i)
         return dif
     else:
@@ -95,7 +95,10 @@ def diff_class( new_class, old_class):
     cal = {}
     down = {}
     new_content = new_class['Content']
-    old_content = old_class['Content']
+    if len(old_class) == 0:
+        old_content = {}
+    else:
+        old_content = old_class['Content']
     item_list = ['課程資訊','公佈欄','課程內容','作業區','投票區','學習成績']
     timeNplace = ['上課時間','上課地點']
     for key in item_list:
@@ -116,29 +119,41 @@ def diff_class( new_class, old_class):
             html_new = new_content[key]['html']
             if not html_new:
                 continue
-            html_old = old_content[key]['html']
+            if len(old_content) == 0:
+                html_old = ''
+            else:
+                html_old = old_content[key]['html']
             differ = diff_item(html_new,html_old)
 
             for i in differ:
                 if(key == '公佈欄'):
                     title = list(i['公告主題'].keys())[0]
-                    post = extract_table_horizon(BeautifulSoup(new_content[key]['content'][title],'html5lib'))
+                    post = extract_table_horizon(BeautifulSoup(new_content[key]['Content'][title],'html5lib'))
                     
                     noti[key][title] = post['公告內容']
-                    down[key][title] = post['相關附檔']
+                    for i in differ:
+                        if(type(post['相關附檔']) is dict):
+                            for t,it in post['相關附檔'].items():
+                                down[key][t] = it
                 else:
                     title = list(i['名稱'].keys())[0]
-                    post = extract_table_horizon(BeautifulSoup(new_content[key]['content'][title],'html5lib'))
+                    post = extract_table_horizon(BeautifulSoup(new_content[key]['Content'][title],'html5lib'))
                     noti[key][title] = post['繳交期限']
                     cal[key][title] = post['繳交期限']
-                    down[key][title] = post['相關檔案']
+                    for i in differ:
+                        if(type(post['相關檔案']) is dict):
+                            for t,it in post['相關檔案'].items():
+                                down[key][t] = it
 
         elif (key == '投票區') or (key == '學習成績'):
             
             html_new = new_content[key]
             if not html_new:
                 continue
-            html_old = old_content[key]
+            if len(old_content) == 0:
+                html_old = ''
+            else:
+                html_old = old_content[key]
             new_data = diff_item(html_new,html_old)
             for i in new_data:
                 if key =='投票區':
@@ -152,7 +167,10 @@ def diff_class( new_class, old_class):
                 continue
             cal['考試'] = {}
             html_new = new_content[key]
-            html_old = old_content[key]
+            if len(old_content) == 0:
+                html_old = ''
+            else:
+                html_old = old_content[key]
             new_data = diff_item(html_new,html_old)
             data = extract_table_vertical(BeautifulSoup(html_new,'html5lib'))
             for a in data:
@@ -174,26 +192,32 @@ def get_head(new_class):
         head[i] = new_class[i]
     return head
 def diff( new_lectures, old_lectures):
+    #print(type(new_lectures))
     notifications = []
     calendars = []
     downlaods = []
     for i in range(len(new_lectures)):
         new_class = new_lectures[i]
-        old_class = old_lectures[i]
-      
-        head = get_head(new_class)
+        if len(old_lectures) == 0:
+            old_class = {}
+        else:
+            old_class = old_lectures[i]
+       
         noti, cal, down = diff_class(new_class,old_class)
-        
-        head['Content'] = noti
-        notifications.append(head)
-        head['Content'] = cal
-        calendars.append(head)
-        head['Content'] = down
-        downlaods.append(head)
-        
+        no = get_head(new_class)
+        no['Content'] = noti
+        notifications.append(no)
+        ca = get_head(new_class)
+        ca['Content'] = cal
+        calendars.append(ca)
+        do = get_head(new_class)
+        do['Content'] = down
+        downlaods.append(do)
+
     return notifications,calendars,downlaods
 def main():
-    notifications,calendars ,downlaods = diff(lecture,lecture2)
+    
+    notifications,calendars ,downlaods = diff(lecture,[])
 
 if __name__ == '__main__':
 

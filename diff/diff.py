@@ -1,8 +1,9 @@
  #!/usr/bin/python
  # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
-import re
+import string
 
+filter_newlines = str.maketrans('', '', '\r\n')
 
 def print_(dic):
     if (type(dic) is dict): 
@@ -24,19 +25,19 @@ def extract_table_horizon(soup): #return dictionary
     rows = table.find_all('tr')
     for row in rows:
         index = row.find('th')
-        index = re.sub("\r|\n","",index.text) 
+        index = index.text.strip().translate(filter_newlines)
         titles.append(index)
         content = row.find('td')
         if(not bool(content)):
             data[index] = ''
             continue
         link = content.find('a')
-        if(bool(link) and link.text.strip(' ')):
+        if link and link.text.strip():
             link_dict ={}
             link_dict[data[titles[0]]+'-'+link.text] = link['href']
             data[index] = link_dict
         else:
-            content = re.sub("\r|\n| ","",content.text)
+            content = content.text.strip().translate(filter_newlines)
             data[index] = content
 
     return data
@@ -51,7 +52,7 @@ def extract_table_vertical(soup): #return list
         titles = row.find_all('th')
         if (len(titles) > 0) :
             for title in titles:
-                title = re.sub("\r|\n| ","",title.text)
+                title = title.text.strip().translate(filter_newlines)
                 index.append(title)
             continue
         item = {}
@@ -65,8 +66,8 @@ def extract_table_vertical(soup): #return list
                     link_dict[link.text] = link['href']
                 contents.append(link_dict)
             else:        
-                text = re.sub("\r|\n| ","",content.text)
-                contents.append(text)
+                content = content.text.strip().translate(filter_newlines)
+                contents.append(content)
         
         for i in range(len(index)):
             item[index[i]] = contents[i]

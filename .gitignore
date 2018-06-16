@@ -1,5 +1,6 @@
 helper_func/cookie.txt
 helper_func/loginc
 tags
-/**/__pycache__/
-/data
+courses.json
+__pycache__/
+data/

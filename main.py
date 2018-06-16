@@ -3,12 +3,12 @@ import sys
 #from helper_func import loginceiba
 sys.path.append('helper_func') #temp
 import loginceiba #temp
-import diff
+from diff import diff
 import notify
 import downloadfile
-from crawler import Crawler
+from crawler.crawler import Crawler
 
-cookie = loginceiba.info('b07902000', '*****', '1062')
+cookie = loginceiba.info('b00000000', '****', '1062')
 if cookie == 1:
     print("can't login!!")
 else:
@@ -19,5 +19,6 @@ else:
     #print(type(courses))
     notifications,calendars ,downlaods = diff.diff(courses[0],[])
 
-    #diff.print_(downlaods[0])
+    # for d in downlaods:
+    #     diff.print_(d)
     downloadfile.downloadfile(downlaods)

@@ -94,7 +94,6 @@ def trim_name(name):
 
 def downloadfile(course_list, data_dir='data/'):
     print('[DOWNLOAD] Start to download files.')
-    print(course_list)
     for c in course_list:
         course_dir = data_dir + trim_name(c['ChineseName']) + '_' + trim_name(c['EnglishName'])
         check_dir(course_dir)

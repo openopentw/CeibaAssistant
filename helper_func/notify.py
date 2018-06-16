@@ -36,13 +36,10 @@ class Notifier():
             return (formatted_summary, '\n'.join(formatted_bodies), icon)
         return template
 
-    def collect_message_from_diff(self, course_diff):
-        message = [self.templates[key](key, course_diff) for key in self.templates.keys()
-                   if key in course_diff['Content'] and course_diff['Content'][key]]
-        return message
-
     def show_diff_notifications(self, course_diffs):
-        for messages in map(self.collect_message_from_diff, course_diffs):
+        diff_to_msg = lambda diff: [self.templates[key](key, diff) for key in self.templates.keys()
+                                    if key in diff['Content'] and diff['Content'][key]]
+        for messages in map(diff_to_msg, course_diffs):
             for message in messages:
                 self._show_notification(*message)
 

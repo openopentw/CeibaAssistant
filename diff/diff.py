@@ -128,7 +128,7 @@ def diff_class( new_class, old_class):
 
             for i in differ:
                 if(key == '公佈欄'):
-                    title = list(i['公告主題'].keys())[0].strip(' ')
+                    title = list(i['公告主題'].keys())[0].strip()
                     post = extract_table_horizon(BeautifulSoup(new_content[key]['Content'][title],'html5lib'))
                     
                     noti[key][title] = post['公告內容']
@@ -136,7 +136,7 @@ def diff_class( new_class, old_class):
                         for t,it in post['相關附檔'].items():
                             down[key][t] = it
                 else:
-                    title = list(i['名稱'].keys())[0].strip(' ')
+                    title = list(i['名稱'].keys())[0].strip()
                     post = extract_table_horizon(BeautifulSoup(new_content[key]['Content'][title],'html5lib'))
                     noti[key][title] = post['繳交期限']
                     cal[key][title] = post['繳交期限']
@@ -156,10 +156,10 @@ def diff_class( new_class, old_class):
             new_data = diff_item(html_new,html_old)
             for i in new_data:
                 if key =='投票區':
-                    title = i['投票主題']
+                    title = i['投票主題'].strip()
                     noti[key][title] = i['結束日期']
                 else:
-                    title = i['項目']
+                    title = i['項目'].strip()
                     noti[key][title] = i['得分']
         elif key == '課程內容':
             if not new_content[key]:

@@ -2,10 +2,14 @@
 
 
 class Notifier():
-    def __init__(self, gui='gtk'):
+    def __init__(self, gui=None):
+        if gui is None:
+            gui = self.find_available_gui()
+
         gui_notifier = {
             'gtk': GtkNotifier,
             'qt': QtNotifier,
+            None: LazyNotifier,
         }
         self.notifier = gui_notifier[gui]()
         self.templates = {
@@ -14,6 +18,14 @@ class Notifier():
             '投票區': self.create_message_template('{}課程張貼了投票'),
             '學習成績': self.create_message_template('{}課程張貼了成績'),
         }
+
+    def find_available_gui(self):
+        try:
+            return next(gui for gui, notifier in zip(['gtk', 'qt'], [GtkNotifier, QtNotifier])
+                        if notifier.test_dependent_module())
+        except StopIteration:
+            print('Warning: Neither Gtk nor Qt the GUI frameworks was found. The notifications are disabled.')
+            return None
 
     def create_message_template(self, summary, body='{:1}', icon='document-open'):
         def template(key, diff):
@@ -24,13 +36,10 @@ class Notifier():
             return (formatted_summary, '\n'.join(formatted_bodies), icon)
         return template
 
-    def collect_message_from_diff(self, course_diff):
-        message = [self.templates[key](key, course_diff) for key in self.templates.keys()
-                   if key in course_diff['Content'] and course_diff['Content'][key]]
-        return message
-
     def show_diff_notifications(self, course_diffs):
-        for messages in map(self.collect_message_from_diff, course_diffs):
+        diff_to_msg = lambda diff: [self.templates[key](key, diff) for key in self.templates.keys()
+                                    if key in diff['Content'] and diff['Content'][key]]
+        for messages in map(diff_to_msg, course_diffs):
             for message in messages:
                 self._show_notification(*message)
 
@@ -42,6 +51,15 @@ class GtkNotifier:
     def __init__(self):
         from gi.repository import Notify
         Notify.init('Ceiba Assistant')
+
+    @staticmethod
+    def test_dependent_module():
+        try:
+            from gi.repository import Notify
+        except ModuleNotFoundError:
+            return False
+        else:
+            return True
 
     def _show_notification(self, *args):
         from gi.repository import Notify
@@ -55,12 +73,29 @@ class QtNotifier:
         from PyQt5 import Qt
         self.dummy = Qt.QApplication(sys.argv)
 
+    @staticmethod
+    def test_dependent_module():
+        try:
+            from PyQt5 import Qt
+        except ModuleNotFoundError:
+            return False
+        else:
+            return True
+
     def _show_notification(self, *args):
         from PyQt5 import Qt
         icon = Qt.QIcon.fromTheme(args[2])
         tray = Qt.QSystemTrayIcon(icon, self.dummy)
         tray.show()
         tray.showMessage(*args[:2], icon)
+
+
+class LazyNotifier:
+    def __init__(self):
+        pass
+
+    def _show_notification(self, *args):
+        pass
 
 
 if __name__ == '__main__':

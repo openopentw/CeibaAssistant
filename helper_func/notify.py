@@ -16,11 +16,13 @@ class Notifier():
         }
 
     def create_message_template(self, summary, body='{:1}', icon='document-open'):
-        return lambda key, diff: (
-            summary.format(diff['ChineseName']),
-            '\n'.join([body.format(*pair) for pair in diff['Content'][key].items()]),
-            icon
-        )
+        def template(key, diff):
+            formatted_summary = summary.format(diff['ChineseName'])
+            formatted_bodies = [body.format(*pair) for pair in diff['Content'][key].items()]
+            if len(formatted_bodies) > 3:
+                formatted_bodies = formatted_bodies[:2] + ['...']
+            return (formatted_summary, '\n'.join(formatted_bodies), icon)
+        return template
 
     def collect_message_from_diff(self, course_diff):
         message = [self.templates[key](key, course_diff) for key in self.templates.keys()

@@ -3,7 +3,12 @@
 #include <string.h>
 #include <string>
 
-#include "curl.h"
+#ifdef _WIN32
+    #include "curl.h"
+#elif __linux__
+    #include <curl/curl.h>
+#endif
+
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>

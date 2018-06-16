@@ -1,10 +1,8 @@
 import os
 import sys
-#from helper_func import loginceiba
-sys.path.append('helper_func') #temp
-import loginceiba #temp
 from diff import diff
-import notify
+from helper_func import loginceiba
+from helper_func.notify import Notifier
 import downloadfile
 from crawler.crawler import Crawler
 
@@ -16,9 +14,11 @@ else:
     print(cookie)
     crawler = Crawler(cookie.strip('\n'))
     courses = crawler.crawl()
-    #print(type(courses))
-    notifications,calendars ,downlaods = diff.diff(courses[0],[])
+    # print(type(courses))
+    notifications, calendars, downloads = diff.diff(courses[0], [])
+    notifier = Notifier()
+    notifier.show_diff_notifications(notifications)
 
     # for d in downlaods:
     #     diff.print_(d)
-    downloadfile.downloadfile(downlaods)
+    downloadfile.downloadfile(downloads)

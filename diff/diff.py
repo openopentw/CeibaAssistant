@@ -31,7 +31,7 @@ def extract_table_horizon(soup): #return dictionary
             data[index] = ''
             continue
         link = content.find('a')
-        if(bool(link)):
+        if(bool(link) and link.text.strip(' ')):
             link_dict ={}
             link_dict[data[titles[0]]+'-'+link.text] = link['href']
             data[index] = link_dict
@@ -127,23 +127,21 @@ def diff_class( new_class, old_class):
 
             for i in differ:
                 if(key == '公佈欄'):
-                    title = list(i['公告主題'].keys())[0]
+                    title = list(i['公告主題'].keys())[0].strip(' ')
                     post = extract_table_horizon(BeautifulSoup(new_content[key]['Content'][title],'html5lib'))
                     
                     noti[key][title] = post['公告內容']
-                    for i in differ:
-                        if(type(post['相關附檔']) is dict):
-                            for t,it in post['相關附檔'].items():
-                                down[key][t] = it
+                    if(type(post['相關附檔']) is dict):
+                        for t,it in post['相關附檔'].items():
+                            down[key][t] = it
                 else:
-                    title = list(i['名稱'].keys())[0]
+                    title = list(i['名稱'].keys())[0].strip(' ')
                     post = extract_table_horizon(BeautifulSoup(new_content[key]['Content'][title],'html5lib'))
                     noti[key][title] = post['繳交期限']
                     cal[key][title] = post['繳交期限']
-                    for i in differ:
-                        if(type(post['相關檔案']) is dict):
-                            for t,it in post['相關檔案'].items():
-                                down[key][t] = it
+                    if(type(post['相關檔案']) is dict):
+                        for t,it in post['相關檔案'].items():
+                            down[key][t] = it
 
         elif (key == '投票區') or (key == '學習成績'):
             

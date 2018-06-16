@@ -2,10 +2,14 @@
 
 
 class Notifier():
-    def __init__(self, gui='gtk'):
+    def __init__(self, gui=None):
+        if gui is None:
+            gui = self.find_available_gui()
+
         gui_notifier = {
             'gtk': GtkNotifier,
             'qt': QtNotifier,
+            None: LazyNotifier,
         }
         self.notifier = gui_notifier[gui]()
         self.templates = {
@@ -14,6 +18,14 @@ class Notifier():
             '投票區': self.create_message_template('{}課程張貼了投票'),
             '學習成績': self.create_message_template('{}課程張貼了成績'),
         }
+
+    def find_available_gui(self):
+        try:
+            return next(gui for gui, notifier in zip(['gtk', 'qt'], [GtkNotifier, QtNotifier])
+                        if notifier.test_dependent_module())
+        except StopIteration:
+            print('Warning: Neither Gtk nor Qt the GUI frameworks was found. The notifications are disabled.')
+            return None
 
     def create_message_template(self, summary, body='{:1}', icon='document-open'):
         def template(key, diff):
@@ -43,6 +55,15 @@ class GtkNotifier:
         from gi.repository import Notify
         Notify.init('Ceiba Assistant')
 
+    @staticmethod
+    def test_dependent_module():
+        try:
+            from gi.repository import Notify
+        except ModuleNotFoundError:
+            return False
+        else:
+            return True
+
     def _show_notification(self, *args):
         from gi.repository import Notify
         message = Notify.Notification.new(*args)
@@ -55,12 +76,29 @@ class QtNotifier:
         from PyQt5 import Qt
         self.dummy = Qt.QApplication(sys.argv)
 
+    @staticmethod
+    def test_dependent_module():
+        try:
+            from PyQt5 import Qt
+        except ModuleNotFoundError:
+            return False
+        else:
+            return True
+
     def _show_notification(self, *args):
         from PyQt5 import Qt
         icon = Qt.QIcon.fromTheme(args[2])
         tray = Qt.QSystemTrayIcon(icon, self.dummy)
         tray.show()
         tray.showMessage(*args[:2], icon)
+
+
+class LazyNotifier:
+    def __init__(self):
+        pass
+
+    def _show_notification(self, *args):
+        pass
 
 
 if __name__ == '__main__':

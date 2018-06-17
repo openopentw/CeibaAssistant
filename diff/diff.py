@@ -103,85 +103,86 @@ def diff_class( new_class, old_class):
     item_list = ['課程資訊','公佈欄','課程內容','作業區','投票區','學習成績']
     timeNplace = ['上課時間','上課地點']
     for key in item_list:
-        cal[key] = {}
-        down[key] = {}
-        noti[key] = {}
-        if (key == '課程資訊'):
-            if not new_content[key]:
-                continue
-            info = extract_table_horizon(BeautifulSoup(new_content[key],'html5lib'))
-            for i in timeNplace:
-                noti[i] = info[i]
-                cal[i] = info[i]
+        if key in new_content:
+            cal[key] = {}
+            down[key] = {}
+            noti[key] = {}
+            if (key == '課程資訊'):
+                if not new_content[key]:
+                    continue
+                info = extract_table_horizon(BeautifulSoup(new_content[key],'html5lib'))
+                for i in timeNplace:
+                    noti[i] = info[i]
+                    cal[i] = info[i]
 
-        elif (key == '公佈欄') or ( key == '作業區'):
+            elif (key == '公佈欄') or ( key == '作業區'):
 
-            
-            html_new = new_content[key]['html']
-            if not html_new:
-                continue
-            if len(old_content) == 0:
-                html_old = ''
-            else:
-                html_old = old_content[key]['html']
-            differ = diff_item(html_new,html_old)
-
-            for i in differ:
-                if(key == '公佈欄'):
-                    title = list(i['公告主題'].keys())[0].strip()
-                    post = extract_table_horizon(BeautifulSoup(new_content[key]['Content'][title],'html5lib'))
-                    
-                    noti[key][title] = post['公告內容']
-                    if(type(post['相關附檔']) is dict):
-                        for t,it in post['相關附檔'].items():
-                            down[key][t] = it
+                
+                html_new = new_content[key]['html']
+                if not html_new:
+                    continue
+                if len(old_content) == 0:
+                    html_old = ''
                 else:
-                    title = list(i['名稱'].keys())[0].strip()
-                    post = extract_table_horizon(BeautifulSoup(new_content[key]['Content'][title],'html5lib'))
-                    noti[key][title] = post['繳交期限']
-                    cal[key][title] = post['繳交期限']
-                    if(type(post['相關檔案']) is dict):
-                        for t,it in post['相關檔案'].items():
-                            down[key][t] = it
+                    html_old = old_content[key]['html']
+                differ = diff_item(html_new,html_old)
 
-        elif (key == '投票區') or (key == '學習成績'):
-            
-            html_new = new_content[key]
-            if not html_new:
-                continue
-            if len(old_content) == 0:
-                html_old = ''
-            else:
-                html_old = old_content[key]
-            new_data = diff_item(html_new,html_old)
-            for i in new_data:
-                if key =='投票區':
-                    title = i['投票主題'].strip()
-                    noti[key][title] = i['結束日期']
+                for i in differ:
+                    if(key == '公佈欄'):
+                        title = list(i['公告主題'].keys())[0].strip()
+                        post = extract_table_horizon(BeautifulSoup(new_content[key]['Content'][title],'html5lib'))
+                        
+                        noti[key][title] = post['公告內容']
+                        if(type(post['相關附檔']) is dict):
+                            for t,it in post['相關附檔'].items():
+                                down[key][t] = it
+                    else:
+                        title = list(i['名稱'].keys())[0].strip()
+                        post = extract_table_horizon(BeautifulSoup(new_content[key]['Content'][title],'html5lib'))
+                        noti[key][title] = post['繳交期限']
+                        cal[key][title] = post['繳交期限']
+                        if(type(post['相關檔案']) is dict):
+                            for t,it in post['相關檔案'].items():
+                                down[key][t] = it
+
+            elif (key == '投票區') or (key == '學習成績'):
+                
+                html_new = new_content[key]
+                if not html_new:
+                    continue
+                if len(old_content) == 0:
+                    html_old = ''
                 else:
-                    title = i['項目'].strip()
-                    noti[key][title] = i['得分']
-        elif key == '課程內容':
-            if not new_content[key]:
-                continue
-            cal['考試'] = {}
-            html_new = new_content[key]
-            if len(old_content) == 0:
-                html_old = ''
-            else:
-                html_old = old_content[key]
-            new_data = diff_item(html_new,html_old)
-            data = extract_table_vertical(BeautifulSoup(html_new,'html5lib'))
-            for a in data:
-                for b in a.values():
-                    if ('期中考' in b):  
-                        cal['考試']['期中考'] = a['日期']
-                    elif ('期末考' in b):
-                        cal['考試']['期末考'] = a['日期']
-            for i in new_data:
-                if(type(i['內容檔案']) is dict):
-                    for title,item in i['內容檔案'].items():
-                        down[key][i['週次']+'-'+title] = item
+                    html_old = old_content[key]
+                new_data = diff_item(html_new,html_old)
+                for i in new_data:
+                    if key =='投票區':
+                        title = i['投票主題'].strip()
+                        noti[key][title] = i['結束日期']
+                    else:
+                        title = i['項目'].strip()
+                        noti[key][title] = i['得分']
+            elif key == '課程內容':
+                if not new_content[key]:
+                    continue
+                cal['考試'] = {}
+                html_new = new_content[key]
+                if len(old_content) == 0:
+                    html_old = ''
+                else:
+                    html_old = old_content[key]
+                new_data = diff_item(html_new,html_old)
+                data = extract_table_vertical(BeautifulSoup(html_new,'html5lib'))
+                for a in data:
+                    for b in a.values():
+                        if ('期中考' in b):  
+                            cal['考試']['期中考'] = a['日期']
+                        elif ('期末考' in b):
+                            cal['考試']['期末考'] = a['日期']
+                for i in new_data:
+                    if(type(i['內容檔案']) is dict):
+                        for title,item in i['內容檔案'].items():
+                            down[key][i['週次']+'-'+title] = item
 
     return noti,cal,down
 def get_head(new_class):

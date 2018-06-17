@@ -1,3 +1,4 @@
+import os
 import argparse
 import configparser
 
@@ -6,6 +7,38 @@ from helper_func import loginceiba
 from helper_func.notify import Notifier
 import downloadfile
 from crawler.crawler import Crawler
+
+
+def default_config_filepath(create=False):
+    if os.environ['XDG_CONFIG_HOME']:
+        # follow XDG base directory specification
+        config_path = os.path.join(os.environ['XDG_CONFIG_HOME'], 'ceiba-assistant/config.ini')
+        if os.path.isfile(config_path) or create:
+            return config_path
+    elif os.environ['HOME']:
+        config_path = os.path.join(os.environ['HOME'], 'ceiba-assistant/config.ini')
+        if os.path.isfile(config_path) or create:
+            return config_path
+    else:
+        config_path = 'config.ini'
+        if os.path.isfile(config_path) or create:
+            return config_path
+
+    # Cannot find an existed config file. Create one.
+    config_path = default_config_filepath(create=True)
+    os.makedirs(os.path.dirname(config_path), exist_ok=True)
+
+    config_template = """
+        [account]
+        student  = {}
+        password = {}
+        semester = {}
+    """
+    with open(config_path, 'w') as config:
+        config.write(config_template.format(input('輸入學號: '),
+                                            input('輸入密碼: '),
+                                            input('輸入學期: ')))
+    return config_path
 
 
 def main(config):
@@ -32,7 +65,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Ceiba Assistant')
     parser.add_argument('-c', '--config', action='store', metavar='config')
     options = parser.parse_args()
-    options.config = options.config or 'config.ini'
+    options.config = options.config or default_config_filepath()
 
     config = configparser.ConfigParser()
     config.read(options.config)

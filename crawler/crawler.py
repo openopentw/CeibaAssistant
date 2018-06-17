@@ -161,14 +161,21 @@ class Crawler():
         return courses
 
     def get_1st_htmls(self, url, debug=False):
+        # get csn
         html = self.get_html_with_cookie(url)
-
         if b'frameset' not in html:
             return {}
-
         soup = BeautifulSoup(html, 'lxml')
         csn_url = soup.find('frameset').find_all('frame')[1]['src']
         csn = csn_url[csn_url.find('csn') + 4:]
+
+        # get language
+        url = 'https://ceiba.ntu.edu.tw/modules/button.php?csn={}&default_fun=&current_lang='.format(csn)
+        html = self.get_html_with_cookie(url)
+        soup = BeautifulSoup(html, 'lxml')
+        language = soup.select_one('option[selected=""]')['value']
+        if debug:
+            print(language)
 
         funs = {
             '課程資訊': 'info',
@@ -185,7 +192,7 @@ class Crawler():
         for idx in funs:
             if debug:
                 print(idx)
-            url = 'https://ceiba.ntu.edu.tw/modules/main.php?csn={}&default_fun={}&current_lang=chinese'.format(csn, funs[idx])
+            url = 'https://ceiba.ntu.edu.tw/modules/main.php?csn={}&default_fun={}&current_lang={}'.format(csn, funs[idx], language)
             if debug:
                 print(url)
             html = self.get_html_with_cookie(url)

@@ -1,4 +1,5 @@
 import os
+import getpass
 import argparse
 import configparser
 
@@ -36,7 +37,7 @@ def default_config_filepath(create=False):
     """
     with open(config_path, 'w') as config:
         config.write(config_template.format(input('輸入學號: '),
-                                            input('輸入密碼: '),
+                                            getpass.getpass('輸入密碼: '),
                                             input('輸入學期: ')))
     return config_path
 

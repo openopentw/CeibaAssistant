@@ -2,6 +2,7 @@
 
 PYTHON := python3
 EXEC   := main.py
+CONF   := config.ini
 
 DEPS   := helper_func
 LIBS   := $(DEPS)/loginc
@@ -12,4 +13,4 @@ build:
 	make -C $(DEPS)
 
 start: build
-	$(PYTHON) $(EXEC)
+	$(PYTHON) $(EXEC) --config $(CONF)

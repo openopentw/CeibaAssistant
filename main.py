@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import getpass
 import argparse
@@ -17,7 +18,7 @@ def default_config_filepath(create=False):
         if os.path.isfile(config_path) or create:
             return config_path
     elif os.environ['HOME']:
-        config_path = os.path.join(os.environ['HOME'], 'ceiba-assistant/config.ini')
+        config_path = os.path.join(os.environ['HOME'], '.ceiba-assistant/config.ini')
         if os.path.isfile(config_path) or create:
             return config_path
     else:
@@ -64,10 +65,11 @@ def main(config):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Ceiba Assistant')
-    parser.add_argument('-c', '--config', action='store', metavar='config')
+    parser.add_argument('-c', '--config', action='store',
+                        default=default_config_filepath(),
+                        help='path to configuration file')
     options = parser.parse_args()
-    options.config = options.config or default_config_filepath()
-
     config = configparser.ConfigParser()
     config.read(options.config)
+
     main(config)

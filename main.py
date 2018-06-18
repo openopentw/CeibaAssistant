@@ -14,11 +14,11 @@ from crawler.crawler import Crawler
 def default_config_filepath(create=False):
     if 'XDG_CONFIG_HOME' in os.environ:
         # follow XDG base directory specification
-        config_path = os.path.join(os.environ['XDG_CONFIG_HOME'], 'ceiba-assistant/config.ini')
+        config_path = os.path.join(os.environ['XDG_CONFIG_HOME'], 'ceiba-assistant', 'config.ini')
         if os.path.isfile(config_path) or create:
             return config_path
     elif 'HOME' in os.environ:
-        config_path = os.path.join(os.environ['HOME'], '.ceiba-assistant/config.ini')
+        config_path = os.path.join(os.environ['HOME'], '.ceiba-assistant', 'config.ini')
         if os.path.isfile(config_path) or create:
             return config_path
     else:

@@ -5,24 +5,28 @@ from bs4 import BeautifulSoup
 from diff import diff
 
 
-# filter_newlines = str.maketrans('', '', '\r\n')
-# strip_text = lambda raw: raw.text.strip().translate(filter_newlines)
-# strip_texts = lambda raws: '\n'.join(map(strip_text, raws))
+filter_newlines = str.maketrans('', '', '\r\n')
+strip_text = lambda raw: raw.text.strip().translate(filter_newlines)
+strip_texts = lambda raws: '\n'.join(map(strip_text, raws))
 
 
-def parse_table(html):
+def parse_table(html, alternative=False):
     try:
         table = BeautifulSoup(html, 'html5lib').select_one('table')
 
         if table.find('thead'):  # it's a table
-            result = diff.extract_table_horizon(table.parent)
-            # select_th = map(strip_text, table.select('thead th'))
-            # result = [{th: strip_text(td) for th, td in zip(select_th, tr.select('td'))}
-            #           for tr in table.select('tbody tr')[1:]]
+            if alternative:
+                select_th = map(strip_text, table.select('thead th'))
+                result = [{th: strip_text(td) for th, td in zip(select_th, tr.select('td'))}
+                          for tr in table.select('tbody tr')[1:]]
+            else:
+                result = diff.extract_table_horizon(table.parent)
         else:  # it's a list in table
-            result = diff.extract_table_vertical(table.parent)
-            # select_th = map(strip_text, table.select('tr th'))
-            # result = {th: strip_texts(tr.select('td')) for th, tr in zip(select_th, table.select('tr'))}
+            if alternative:
+                select_th = map(strip_text, table.select('tr th'))
+                result = {th: strip_texts(tr.select('td')) for th, tr in zip(select_th, table.select('tr'))}
+            else:
+                result = diff.extract_table_vertical(table.parent)
     except AttributeError:
         return None
     else:
@@ -31,7 +35,7 @@ def parse_table(html):
 
 def parse_course(course):
     parse_fun = {
-        '課程資訊': parse_table,
+        '課程資訊': lambda json: parse_table(json, alternative=True),
         '教師資訊': parse_table,
         '公佈欄'  : lambda json: map(parse_table, json['Content'].values()),
         '課程內容': parse_table,

@@ -45,8 +45,3 @@ def parse_course(course):
         '學習成績': parse_table,
     }
     return {key: parse_fun[key](value) for key, value in course['Content'].items()}
-
-
-with open('courses.json', 'r') as courses_data:
-    courses = json.load(courses_data)
-    courses = map(parse_course, courses)

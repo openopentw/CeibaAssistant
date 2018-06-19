@@ -29,6 +29,10 @@ def submit_homework_form(crawler, url, file):
     return requests.post(url, **args)
 
 
+def check_submit_response(response):
+    return BeautifulSoup(response.content.decode(), 'html5lib').select_one('body')['onload'] == "Page_load('hw_upload','1')"
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Ceiba Assistant')
     parser.add_argument('-c', '--config', action='store',

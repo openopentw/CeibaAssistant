@@ -42,7 +42,7 @@ class Uploader:
         pass
 
     def build_ui(self):
-        ui_glade = os.path.join(os.path.dirname(__file__), 'uploader.glade')
+        ui_glade = os.path.join(os.path.dirname(__file__), 'uploader-gtk.glade')
         builder = Gtk.Builder()
         builder.add_from_file(ui_glade)
         builder.connect_signals(self)

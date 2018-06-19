@@ -7,13 +7,14 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-cancel</property>
   </object>
-  <object class="GtkImage" id="connect_image">
+  <object class="GtkImage" id="submit_image">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-connect</property>
+    <property name="stock">gtk-open</property>
   </object>
   <object class="GtkWindow" id="window">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">上傳作業</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <signal name="delete-event" handler="on_window_delete_event" swapped="no"/>
@@ -77,11 +78,11 @@
             </child>
             <child>
               <object class="GtkButton">
-                <property name="label" translatable="yes">開啟網頁</property>
+                <property name="label" translatable="yes">上傳</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="image">connect_image</property>
+                <property name="image">submit_image</property>
                 <signal name="clicked" handler="on_open_button_clicked" swapped="no"/>
               </object>
               <packing>

@@ -66,9 +66,10 @@ def main(config):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Ceiba Assistant')
     parser.add_argument('-c', '--config', action='store',
-                        default=default_config_filepath(),
                         help='path to configuration file')
     options = parser.parse_args()
+    options.config = options.config or default_config_filepath()
+
     config = configparser.ConfigParser()
     config.read(options.config)
 

@@ -4,7 +4,7 @@ import json
 import argparse
 import configparser
 
-import cli
+import parse
 import main
 import submit
 from helper_func import loginceiba
@@ -84,14 +84,12 @@ def _main(option, config):
     with open(course_cache, 'r') as courses_data:
         courses = json.load(courses_data)
 
-    for course in map(cli.parse_course, courses):
-        # from pprint import pprint
-        # pprint(course)
+    for course in map(parse.parse_course, courses):
         if course['作業區'] is None:
             continue
         get_links = lambda hw_url: [
-            course['課程資訊']['課程網址'],
-            'https://ceiba.ntu.edu.tw/modules/hw/hw.php',
+            course['課程資訊']['課程網址'],                 # If ignored: 操作錯誤
+            'https://ceiba.ntu.edu.tw/modules/hw/hw.php',   # If ignored: 您非修課學生
             'https://ceiba.ntu.edu.tw/modules/hw/' + hw_url
         ]
         name = course['課程資訊']['課程名稱']

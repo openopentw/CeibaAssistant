@@ -5,25 +5,16 @@ from bs4 import BeautifulSoup
 import requests
 
 import main
+import parse
 from helper_func import loginceiba
 from crawler.crawler import Crawler
-
-
-def parse_form(html):
-    try:
-        form = BeautifulSoup(html, 'html5lib').select_one('form[action^="hw_show.php"]')
-        inputs = {_input['name']: _input['value'] for _input in form.select('input[value]')}
-    except AttributeError:
-        return None
-    else:
-        return inputs
 
 
 def submit_homework_form(crawler, url, file):
     html = crawler.get_html_with_cookie(url)
     args = {
         'cookies': dict(item.split('=') for item in crawler.headers['Cookie'].split('; ')),
-        'data': parse_form(html),
+        'data': parse.parse_form(html),
         'files': {'file': open(file, 'rb')},
     }
     return requests.post(url, **args)

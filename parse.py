@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import json
 from bs4 import BeautifulSoup
 
 from diff import diff
@@ -8,6 +7,16 @@ from diff import diff
 filter_newlines = str.maketrans('', '', '\r\n')
 strip_text = lambda raw: raw.text.strip().translate(filter_newlines)
 strip_texts = lambda raws: '\n'.join(map(strip_text, raws))
+
+
+def parse_form(html):
+    try:
+        form = BeautifulSoup(html, 'html5lib').select_one('form')
+        inputs = {_input['name']: _input['value'] for _input in form.select('input[value]')}
+    except AttributeError:
+        return None
+    else:
+        return inputs
 
 
 def parse_table(html, alternative=False):

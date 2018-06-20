@@ -157,7 +157,10 @@ def diff_class( new_class, old_class):
                 new_data = diff_item(html_new,html_old)
                 for i in new_data:
                     if key =='投票區':
-                        title = i['投票主題'].strip()
+                        if(i['投票主題'] is not dict):
+                            title = i['投票主題'].strip()
+                        else:
+                            title = list(i['投票主題'].keys())[0].strip()
                         noti[key][title] = i['結束日期']
                     else:
                         title = i['項目'].strip()
